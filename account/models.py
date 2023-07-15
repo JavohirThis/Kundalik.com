@@ -1,14 +1,24 @@
 
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = (
+        ('a','Admin'),
+        ('s','Student'),
+        ('t','Teacher'),
+        ('p','Parent')
+    )
+    roles =     models.CharField(max_length=1,choices=ROLE_CHOICES)
+
 class PersonModel(models.Model):
     name = models.CharField(max_length=65,default='')
     fname = models.CharField(max_length=65,default='')
     date_of_birth =models.DateField(default=datetime.now)
     address = models.TextField()
-
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None,null=True)
     def __str__(self) -> str:
         return self.name
 
@@ -16,8 +26,8 @@ class PersonModel(models.Model):
         abstract = True
 
 class ParentsModel(PersonModel):
-    user_name = models.CharField(max_length=65,default='')
-    password = models.CharField(max_length=40,default='')
+    #user_name = models.CharField(max_length=65,default='')
+    #password = models.CharField(max_length=40,default='')
 
     def __str__(self):
         return self.name
